@@ -2,17 +2,17 @@
   "name": "polling-timer",
   "version": "1.0.0",
   "description": "Javascript timer that negates the effects of OS hibernation and thread suspension",
-  "main": "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[Dmaindist/index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "tsc --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jpgorman/polling-timer.git",
+    "test": "jest --colors",
     "prettier": "prettier --parser typescript --single-quote",
     "prettier:check": "npm run prettier -l \"src/**/*.ts\"",
     "prettier:write": "npm run prettier --write \"src/**/*.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpgorman/polling-timer.git"
   },
   "author": "",
   "license": "ISC",

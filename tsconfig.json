@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
+    "lib": ["es6", "dom"],
     "outDir": "./dist/",
     "sourceMap": true,
     "strictNullChecks": true,
     "module": "es6",
-    "target": "es5"
+    "target": "es5",
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "./src/"
