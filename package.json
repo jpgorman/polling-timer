@@ -1,0 +1,23 @@
+{
+  "name": "polling-timer",
+  "version": "1.0.0",
+  "description": "Javascript timer that negates the effects of OS hibernation and thread suspension",
+  "main": "\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[Dmaindist/index.js",
+  "scripts": {
+    "start": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpgorman/polling-timer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpgorman/polling-timer/issues"
+  },
+  "homepage": "https://github.com/jpgorman/polling-timer#readme",
+  "dependencies": {
+    "typescript": "^3.5.3"
+  }
+}
