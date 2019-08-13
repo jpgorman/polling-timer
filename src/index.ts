@@ -1,25 +1,5 @@
 const DEFAULT_INTERVAL_MS: number = 1000;
 
-interface ICancellable<T> extends Promise<T> {
-  cancel?: () => void;
-}
-
-// jsfiddle.net/y7mLbs43
-
-const makeCancelablePromise = <T>(promise: Promise<T>): ICancellable<T> => {
-  let resolveFn;
-
-  const wrappedPromise: ICancellable<T> = new Promise<T>((resolve, reject) => {
-    resolveFn = resolve;
-    Promise.resolve(promise)
-      .then(resolve)
-      .catch(reject);
-  });
-
-  wrappedPromise.cancel = () => resolveFn({cancelled: true});
-  return wrappedPromise;
-};
-
 interface ICancellablePromise<T> extends Promise<T> {
   cancel: () => void;
   onCancel: (fn: () => void) => void;
@@ -36,10 +16,7 @@ const cancelablePromiseFactory = <T>(
   let onCancel;
 
   cancel = cancel.then(() => Promise.resolve(new Error('Cancelled')));
-  cancel.then(e => {
-    console.log('catching', e);
-    onCancel();
-  });
+  cancel.then(onCancel);
 
   let cancelablePromise = Promise.race([
     promise,
@@ -48,7 +25,6 @@ const cancelablePromiseFactory = <T>(
 
   cancelablePromise.cancel = () => resolveFn();
   cancelablePromise.onCancel = fn => {
-    console.log(fn);
     onCancel = fn;
   };
   return cancelablePromise;
@@ -57,7 +33,7 @@ const cancelablePromiseFactory = <T>(
 export const timer = (
   timeout: number,
   pollingFrequency: number = DEFAULT_INTERVAL_MS,
-): ICancellable<number | void> => {
+): ICancellablePromise<number> => {
   let timer: any;
   let diff: number = 0;
   const start = new Date().getTime();
@@ -74,7 +50,6 @@ export const timer = (
     }),
   );
   cancelablePromise.onCancel(() => {
-    console.log('onCancel', timer);
     clearInterval(timer);
   });
 
@@ -84,7 +59,7 @@ export const timer = (
 export const delay = (
   timeout: number,
   pollingFrequency: number = DEFAULT_INTERVAL_MS,
-): ICancellable<number | void> => timer(timeout, pollingFrequency);
+): ICancellablePromise<number> => timer(timeout, pollingFrequency);
 
 type TFunc = <T>(args: T) => any;
 export const throttle = (
@@ -118,7 +93,6 @@ export const debounce = (
     }
     cancelablePromise = timer(timeout, pollingFrequency);
     cancelablePromise.then(res => {
-      console.log(res);
       typeof res === 'number' && fn.apply(null, args);
     });
   };
