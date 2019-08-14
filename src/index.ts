@@ -9,11 +9,11 @@ const cancelablePromiseFactory = <T>(
   promise: Promise<T>,
 ): ICancellablePromise<T> => {
   let resolveFn;
+  let onCancel;
+
   let cancel = new Promise<any>(r => {
     resolveFn = r;
   });
-
-  let onCancel;
 
   cancel = cancel.then(() => Promise.resolve(new Error('Cancelled')));
   cancel.then(onCancel);
@@ -61,20 +61,46 @@ export const delay = (
   pollingFrequency: number = DEFAULT_INTERVAL_MS,
 ): ICancellablePromise<number> => timer(timeout, pollingFrequency);
 
+export const timeout = (
+  fn: TFunc,
+  timeout: number,
+  pollingFrequency: number,
+) => {
+  return (...args: any) => {
+    delay(timeout, pollingFrequency).then(() => {
+      fn.apply(this, args);
+    });
+  };
+};
+
 type TFunc = <T>(args: T) => any;
 export const throttle = (
   fn: TFunc,
   timeout: number,
   pollingFrequency: number,
 ) => {
-  let isThrottled: boolean = false;
+  let lastRun;
+  let lastFunc;
+  let cancelablePromise;
 
-  return (args?: any) => {
-    if (!isThrottled) {
-      fn.apply(null, args);
-      isThrottled = true;
-      delay(timeout, pollingFrequency).then(() => {
-        isThrottled = false;
+  return (...args: any) => {
+    const context = this;
+    if (!lastRun) {
+      fn.apply(context, args);
+      lastRun = Date.now();
+    } else {
+      if (cancelablePromise != null) {
+        cancelablePromise.cancel();
+      }
+
+      const countdown = timeout - (Date.now() - lastRun);
+
+      cancelablePromise = delay(countdown, pollingFrequency).then(() => {
+        const throttleTimoutReached = Date.now() - lastRun >= timeout;
+        if (throttleTimoutReached) {
+          fn.apply(context, args);
+          lastRun = Date.now();
+        }
       });
     }
   };
@@ -87,13 +113,13 @@ export const debounce = (
 ) => {
   let cancelablePromise;
 
-  return (args?: any) => {
+  return (...args: any) => {
     if (cancelablePromise != null) {
       cancelablePromise.cancel();
     }
     cancelablePromise = timer(timeout, pollingFrequency);
     cancelablePromise.then(res => {
-      typeof res === 'number' && fn.apply(null, args);
+      typeof res === 'number' && fn.apply(this, args);
     });
   };
 };

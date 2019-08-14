@@ -26,7 +26,7 @@ describe('debounce', () => {
     res();
     await delay(5, 1);
     res();
-    await delay(10, 1);
+    await delay(11, 1);
     res();
     expect(mockFn).toHaveBeenCalledTimes(1);
   });
