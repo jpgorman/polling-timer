@@ -1,4 +1,4 @@
-import {delay, throttle, debounce} from '../index';
+import {delay, throttle, debounce, timeout} from '../index';
 
 describe('delay', () => {
   it('Should resolve start time of timer', async () => {
@@ -8,8 +8,18 @@ describe('delay', () => {
   });
 });
 
-describe('throttle', () => {
+describe('timeout', () => {
   it('Should only call the supplied function once the timeout has passed', async () => {
+    const mockFn = jest.fn();
+    const res = timeout(mockFn, 20, 1);
+    res();
+    await delay(20, 1);
+    expect(mockFn).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('throttle', () => {
+  it('Should ignore call function calls until timeout has passed', async () => {
     const mockFn = jest.fn();
     const res = throttle(mockFn, 20, 1);
     res();
