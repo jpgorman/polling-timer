@@ -2,9 +2,11 @@
   "name": "polling-timer",
   "version": "1.0.0",
   "description": "Javascript timer that negates the effects of OS hibernation and thread suspension",
-  "main": "./dist/index.js",
+  "main": "./dist/es5/index.js",
+  "module": "./dist/es5module/index.js",
+  "typings": "./dist/dts/index.ts",
   "scripts": {
-    "start": "tsc --watch",
+    "build": "rimraf ./dist && gulp",
     "test": "jest --colors",
     "prettier": "prettier --parser typescript --single-quote",
     "prettier:check": "npm run prettier -l \"src/**/*.ts\"",
@@ -20,13 +22,20 @@
     "url": "https://github.com/jpgorman/polling-timer/issues"
   },
   "homepage": "https://github.com/jpgorman/polling-timer#readme",
-  "dependencies": {
-    "typescript": "^3.5.3"
-  },
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-syntax-typescript": "^7.3.3",
+    "@types/babel__core": "^7.1.2",
     "@types/jest": "^24.0.17",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0-beta.2",
+    "gulp-revert-path": "^2.0.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-typescript": "^5.0.1",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2"
+    "rimraf": "^3.0.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
   }
 }
