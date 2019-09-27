@@ -55,10 +55,12 @@ describe('throttle', () => {
     const res = throttle(mockFn, 20, 1);
     res();
     const promise = res();
-    promise.cancel();
-    promise.then(e => {
-      expect(e).toEqual(new Error('Cancelled'));
-    });
+    if (promise && promise.cancel != null) {
+      promise.cancel();
+      promise.then(e => {
+        expect(e).toEqual(new Error('Cancelled'));
+      });
+    }
   });
 });
 
