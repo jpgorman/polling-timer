@@ -27,7 +27,7 @@ describe('timeout', () => {
     const mockFn = jest.fn();
     const res = timeout(mockFn, 20, 1);
     res();
-    await delay(20, 1);
+    await delay(21, 1);
     expect(mockFn).toHaveBeenCalledTimes(1);
   });
   it('Can be cancelled', () => {
