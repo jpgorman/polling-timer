@@ -1,5 +1,5 @@
 {
-  "name": "polling-timer",
+  "name": "polling-timers",
   "version": "1.0.0",
   "description": "Javascript timer that negates the effects of OS hibernation and thread suspension",
   "main": "./dist/es5/index.js",

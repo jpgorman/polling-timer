@@ -30,7 +30,7 @@ const cancelablePromiseFactory = <T>(
   return cancelablePromise;
 };
 
-export const timer = (
+const timer = (
   timeout: number,
   pollingFrequency: number = DEFAULT_INTERVAL_MS,
 ): ICancellablePromise<number> => {
@@ -66,10 +66,12 @@ export const timeout = (
   timeout: number,
   pollingFrequency: number,
 ) => {
+  let cancelablePromise;
   return (...args: any) => {
-    delay(timeout, pollingFrequency).then(() => {
+    cancelablePromise = delay(timeout, pollingFrequency).then(() => {
       fn.apply(this, args);
     });
+    return cancelablePromise;
   };
 };
 
@@ -102,6 +104,7 @@ export const throttle = (
           lastRun = Date.now();
         }
       });
+      return cancelablePromise;
     }
   };
 };
@@ -121,5 +124,6 @@ export const debounce = (
     cancelablePromise.then(res => {
       typeof res === 'number' && fn.apply(this, args);
     });
+    return cancelablePromise;
   };
 };
