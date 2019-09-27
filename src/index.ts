@@ -30,7 +30,7 @@ const cancelablePromiseFactory = <T>(
   return cancelablePromise;
 };
 
-const timer = (
+export const timer = (
   timeout: number,
   pollingFrequency: number = DEFAULT_INTERVAL_MS,
 ): ICancellablePromise<number> => {
@@ -67,10 +67,15 @@ export const timeout = (
   pollingFrequency: number,
 ) => {
   let cancelablePromise;
-  return (...args: any) => {
-    cancelablePromise = delay(timeout, pollingFrequency).then(() => {
+  if (cancelablePromise != null) {
+    cancelablePromise.cancel();
+  }
+  return (...args: any): ICancellablePromise<number> => {
+    cancelablePromise = timer(timeout, pollingFrequency);
+    cancelablePromise.then(() => {
       fn.apply(this, args);
     });
+
     return cancelablePromise;
   };
 };
@@ -85,9 +90,10 @@ export const throttle = (
   let lastFunc;
   let cancelablePromise;
 
-  return (...args: any) => {
+  return (...args: any): ICancellablePromise<number> | undefined => {
     const context = this;
     if (!lastRun) {
+      console.log('allowed');
       fn.apply(context, args);
       lastRun = Date.now();
     } else {
@@ -97,7 +103,8 @@ export const throttle = (
 
       const countdown = timeout - (Date.now() - lastRun);
 
-      cancelablePromise = delay(countdown, pollingFrequency).then(() => {
+      cancelablePromise = timer(countdown, pollingFrequency);
+      cancelablePromise.then(() => {
         const throttleTimoutReached = Date.now() - lastRun >= timeout;
         if (throttleTimoutReached) {
           fn.apply(context, args);
@@ -116,7 +123,7 @@ export const debounce = (
 ) => {
   let cancelablePromise;
 
-  return (...args: any) => {
+  return (...args: any): ICancellablePromise<number> => {
     if (cancelablePromise != null) {
       cancelablePromise.cancel();
     }
