@@ -4,7 +4,7 @@
 
 ## Summary
 
-The `polling-timer` offers a number of async timers that allow for more precise handling of timeouts. In addition they are aware of what moment in time they were started. This means that if an OS goes into hibernation, when it awakes the timers will know if they should have timedout within the hibernation period. A good example of this, is backgrounding an app or working in a separate browser tab.
+`polling-timers` offers a number of async timers that allow for more precise handling of timeouts. In addition they are aware of what moment in time they were started. This means that if an OS goes into hibernation, when it awakes the timers will know if they should have timedout within the hibernation period. A good example of this, is backgrounding an app or working in a separate browser tab.
 
 ## Installation
 
